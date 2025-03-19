@@ -1,5 +1,5 @@
 <template>
-  <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+  <div v-auto-animate class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
     <template v-if="filteredVehicles.length > 0">
       <ShipCard
         v-for="(vehicle, index) in filteredVehicles"
@@ -38,8 +38,8 @@ export default defineComponent({
       return props.vehicles.filter((vehicle) => {
         const levelMatch = props.filter.level === null || vehicle.level === props.filter.level
         const nationMatch =
-          props.filter.nation === null || vehicle.nation.name === props.filter.nation
-        const typeMatch = props.filter.type === null || vehicle.type.name === props.filter.type
+          props.filter.nation === null || vehicle.nation.title === props.filter.nation
+        const typeMatch = props.filter.type === null || vehicle.type.title === props.filter.type
 
         return levelMatch && nationMatch && typeMatch
       })

@@ -1,6 +1,6 @@
 <template>
   <div class="min-h-screen bg-gray-50">
-    <header class="bg-blue-900 text-white py-6">
+    <header class="bg-black text-white py-6">
       <div class="container mx-auto px-4">
         <h1 class="text-3xl font-bold">Мир Кораблей: Галерея</h1>
         <p class="mt-2">Полная коллекция боевых кораблей</p>
