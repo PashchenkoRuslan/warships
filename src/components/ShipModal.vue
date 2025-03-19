@@ -2,7 +2,7 @@
   <div v-if="isOpen" class="fixed inset-0 z-50 overflow-y-auto bg-blue-950 bg-opacity-75">
     <div class="min-h-screen flex items-center justify-center p-4">
       <div class="bg-white rounded-lg shadow-xl w-full max-w-4xl">
-        <div class="bg-black text-white p-4 rounded-t-lg flex justify-between items-center">
+        <div class="bg-gray-500 text-white p-4 rounded-t-lg flex justify-between items-center">
           <h2 class="text-2xl font-bold">{{ vehicle.title }}</h2>
           <button @click="close" class="text-white hover:text-gray-300 cursor-pointer">
             <svg
@@ -23,7 +23,7 @@
         </div>
 
         <div class="p-0">
-          <div class="relative w-full bg-gray-800" style="height: 360px">
+          <div class="relative w-full bg-gray-100" style="height: 360px">
             <img
               v-if="shipImage"
               :src="shipImage"
@@ -42,7 +42,13 @@
                   class="w-8 h-8 mr-2"
                   loading="lazy"
                 />
-                <span class="text-lg text-white">{{ vehicle.nation.title }}</span>
+                <span
+                  class="text-lg text-white border py-0.5 px-2 rounded"
+                  :style="{
+                    borderColor: vehicle.nation.color || '#f0f0f0',
+                  }"
+                  >{{ vehicle.nation.title }}</span
+                >
               </div>
               <h2 class="text-3xl font-bold mt-2 text-white">{{ vehicle.title }}</h2>
               <div class="flex items-center mt-2">
