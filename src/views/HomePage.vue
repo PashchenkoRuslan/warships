@@ -64,6 +64,7 @@ export default defineComponent({
       level: null,
       nation: null,
       type: null,
+      search: '',
     })
 
     const loadVehicles = async () => {

@@ -44,7 +44,12 @@
       </div>
       <div class="flex flex-col">
         <label for="level-filter" class="mb-1 text-sm">Поиск по названию</label>
-        <input class="border rounded p-2" placeholder="Поиск..." type="text" />
+        <input
+          class="border rounded p-2"
+          placeholder="Поиск..."
+          type="text"
+          @input="handleSearch"
+        />
       </div>
     </div>
   </div>
@@ -55,6 +60,7 @@
 
 <script lang="ts">
 import { defineComponent, type PropType, computed } from 'vue'
+import debounce from 'lodash.debounce'
 import type { Vehicle, FilterState } from '@/types/types'
 
 export default defineComponent({
@@ -101,6 +107,12 @@ export default defineComponent({
       emit('update:modelValue', { ...props.modelValue, type: value })
     }
 
+    const handleSearch = debounce((e: Event) => {
+      const target = e.target as HTMLInputElement
+      const value = target.value
+      emit('update:modelValue', { ...props.modelValue, search: value })
+    }, 300)
+
     return {
       levels,
       nations,
@@ -108,6 +120,7 @@ export default defineComponent({
       handleLevelChange,
       handleNationChange,
       handleTypeChange,
+      handleSearch,
     }
   },
 })

@@ -56,8 +56,9 @@ export default defineComponent({
         const nationMatch =
           props.filter.nation === null || vehicle.nation.title === props.filter.nation
         const typeMatch = props.filter.type === null || vehicle.type.title === props.filter.type
+        const searchMatch = vehicle.title.toLowerCase().includes(props.filter.search.toLowerCase())
 
-        return levelMatch && nationMatch && typeMatch
+        return levelMatch && nationMatch && typeMatch && searchMatch
       })
     })
 

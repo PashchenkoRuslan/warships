@@ -35,4 +35,5 @@ export interface FilterState {
   level: number | null
   nation: string | null
   type: string | null
+  search: string
 }
