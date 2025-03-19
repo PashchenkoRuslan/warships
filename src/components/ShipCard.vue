@@ -31,7 +31,13 @@
             class="w-5 h-5 mr-1"
             loading="lazy"
           />
-          <span class="text-sm">{{ vehicle.nation.title }}</span>
+          <span
+            :style="{
+              borderColor: vehicle.nation.color || '#f0f0f0',
+            }"
+            class="text-sm py-0.5 px-2 rounded border"
+            >{{ vehicle.nation.title }}</span
+          >
         </div>
 
         <div class="flex items-center">

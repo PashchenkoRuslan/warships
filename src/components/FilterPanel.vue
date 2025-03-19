@@ -1,7 +1,7 @@
 <template>
   <div class="bg-gray-100 p-4 rounded-lg shadow mb-6">
     <h3 class="font-bold text-lg mb-3">Фильтры</h3>
-    <div class="flex flex-wrap justify-between">
+    <div class="flex flex-wrap gap-4 justify-between">
       <div class="flex flex-wrap gap-4">
         <div class="flex flex-col">
           <label for="level-filter" class="mb-1 text-sm">Уровень</label>
