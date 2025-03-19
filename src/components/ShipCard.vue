@@ -1,20 +1,25 @@
 <template>
   <div
-    class="border rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-shadow bg-white"
+    @click="$emit('select-ship', vehicle)"
+    class="block border rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-shadow bg-white cursor-pointer"
   >
-    <div
-      class="h-48 bg-cover bg-center"
-      :style="{
-        backgroundImage: `url(${vehicle.icons.medium})`,
-        backgroundColor: vehicle.nation.color || '#f0f0f0',
-      }"
-    ></div>
+    <div class="relative h-48 bg-gray-100">
+      <img
+        :src="shipImage"
+        :alt="vehicle.title"
+        class="h-full w-full object-cover object-center"
+        loading="lazy"
+        @error="handleImageError"
+      />
+      <div
+        class="absolute top-2 right-2 bg-blue-100 text-blue-800 text-xs font-semibold px-2.5 py-0.5 rounded"
+      >
+        Ур. {{ vehicle.level }}
+      </div>
+    </div>
     <div class="p-4">
-      <div class="flex items-center justify-between mb-2">
+      <div class="mb-2">
         <h3 class="font-bold text-lg truncate">{{ vehicle.title }}</h3>
-        <span class="bg-blue-100 text-blue-800 text-xs font-semibold px-2.5 py-0.5 rounded">
-          Ур. {{ vehicle.level }}
-        </span>
       </div>
 
       <div class="flex items-center mb-3">
@@ -24,6 +29,7 @@
             :src="vehicle.nation.icons.small"
             :alt="vehicle.nation.title"
             class="w-5 h-5 mr-1"
+            loading="lazy"
           />
           <span class="text-sm">{{ vehicle.nation.title }}</span>
         </div>
@@ -34,6 +40,7 @@
             :src="vehicle.type.icons.default"
             :alt="vehicle.type.title"
             class="w-5 h-5 mr-1"
+            loading="lazy"
           />
           <span class="text-sm">{{ vehicle.type.title }}</span>
         </div>
@@ -45,8 +52,8 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, type PropType } from 'vue'
-import type { Vehicle } from '@/types/types';
+import { defineComponent, type PropType, ref, computed } from 'vue'
+import type { Vehicle } from '@/types/types'
 
 export default defineComponent({
   name: 'ShipCard',
@@ -55,6 +62,26 @@ export default defineComponent({
       type: Object as PropType<Vehicle>,
       required: true,
     },
+  },
+  emits: ['select-ship'],
+  setup(props) {
+    const imageError = ref(false)
+
+    const shipImage = computed(() => {
+      if (imageError.value) {
+        return '/placeholder-ship.png'
+      }
+      return props.vehicle.icons.medium
+    })
+
+    const handleImageError = () => {
+      imageError.value = true
+    }
+
+    return {
+      shipImage,
+      handleImageError,
+    }
   },
 })
 </script>

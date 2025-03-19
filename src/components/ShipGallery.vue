@@ -6,6 +6,7 @@
           v-for="(vehicle, index) in paginatedVehicles"
           :key="`${vehicle.title}-${index}`"
           :vehicle="vehicle"
+          @select-ship="openModal"
         />
       </template>
       <div v-else class="col-span-full text-center py-12 text-gray-500">
@@ -18,19 +19,29 @@
       :total-pages="totalPages"
       @page-change="handlePageChange"
     />
+
+    <!-- Ship Modal -->
+    <ShipModal
+      v-if="selectedShip"
+      :vehicle="selectedShip"
+      :is-open="isModalOpen"
+      @close="closeModal"
+    />
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, type PropType, computed, ref, watch } from 'vue'
+import { defineComponent, type PropType, computed, ref, watch, onBeforeUnmount } from 'vue'
 import type { Vehicle, FilterState } from '@/types/types'
 import ShipCard from './ShipCard.vue'
+import ShipModal from './ShipModal.vue'
 import Pagination from './Pagination.vue'
 
 export default defineComponent({
   name: 'ShipGallery',
   components: {
     ShipCard,
+    ShipModal,
     Pagination,
   },
   props: {
@@ -49,6 +60,8 @@ export default defineComponent({
   },
   setup(props) {
     const currentPage = ref(1)
+    const selectedShip = ref<Vehicle | null>(null)
+    const isModalOpen = ref(false)
 
     const filteredVehicles = computed(() => {
       return props.vehicles.filter((vehicle) => {
@@ -78,6 +91,25 @@ export default defineComponent({
       }
     }
 
+    const openModal = (vehicle: Vehicle) => {
+      selectedShip.value = vehicle
+      isModalOpen.value = true
+    }
+
+    const closeModal = () => {
+      isModalOpen.value = false
+
+      document.body.style.overflow = ''
+
+      setTimeout(() => {
+        selectedShip.value = null
+      }, 300)
+    }
+
+    onBeforeUnmount(() => {
+      document.body.style.overflow = ''
+    })
+
     watch(
       () => props.filter,
       () => {
@@ -92,6 +124,10 @@ export default defineComponent({
       currentPage,
       totalPages,
       handlePageChange,
+      selectedShip,
+      isModalOpen,
+      openModal,
+      closeModal,
     }
   },
 })
