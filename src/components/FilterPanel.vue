@@ -43,11 +43,13 @@
         </div>
       </div>
       <div class="flex flex-col">
-        <label for="level-filter" class="mb-1 text-sm">Поиск по названию</label>
+        <label for="search-filter" class="mb-1 text-sm">Поиск по названию</label>
         <input
+          id="search-filter"
           class="border rounded p-2"
           placeholder="Поиск..."
           type="text"
+          :value="modelValue.search"
           @input="handleSearch"
         />
       </div>
@@ -55,73 +57,53 @@
   </div>
 </template>
 
-<!-- TODO Перенести полностью проект на compositionApi -->
-<!-- TODO Добавить логику поиска -->
-
-<script lang="ts">
-import { defineComponent, type PropType, computed } from 'vue'
+<script setup lang="ts">
+import { computed } from 'vue'
 import debounce from 'lodash.debounce'
 import type { Vehicle, FilterState } from '@/types/types'
 
-export default defineComponent({
-  name: 'FilterPanel',
-  props: {
-    vehicles: {
-      type: Array as PropType<Vehicle[]>,
-      required: true,
-    },
-    modelValue: {
-      type: Object as PropType<FilterState>,
-      required: true,
-    },
-  },
-  emits: ['update:modelValue'],
-  setup(props, { emit }) {
-    const levels = computed(() => {
-      return [...new Set(props.vehicles.map((vehicle) => vehicle.level))].sort((a, b) => a - b)
-    })
+const props = defineProps<{
+  vehicles: Vehicle[]
+  modelValue: FilterState
+}>()
 
-    const nations = computed(() => {
-      return [...new Set(props.vehicles.map((vehicle) => vehicle.nation.title))]
-    })
+const emit = defineEmits<{
+  (e: 'update:modelValue', value: FilterState): void
+}>()
 
-    const types = computed(() => {
-      return [...new Set(props.vehicles.map((vehicle) => vehicle.type.title))]
-    })
-
-    const handleLevelChange = (e: Event) => {
-      const target = e.target as HTMLSelectElement
-      const value = target.value === 'all' ? null : parseInt(target.value)
-      emit('update:modelValue', { ...props.modelValue, level: value })
-    }
-
-    const handleNationChange = (e: Event) => {
-      const target = e.target as HTMLSelectElement
-      const value = target.value === 'all' ? null : target.value
-      emit('update:modelValue', { ...props.modelValue, nation: value })
-    }
-
-    const handleTypeChange = (e: Event) => {
-      const target = e.target as HTMLSelectElement
-      const value = target.value === 'all' ? null : target.value
-      emit('update:modelValue', { ...props.modelValue, type: value })
-    }
-
-    const handleSearch = debounce((e: Event) => {
-      const target = e.target as HTMLInputElement
-      const value = target.value
-      emit('update:modelValue', { ...props.modelValue, search: value })
-    }, 300)
-
-    return {
-      levels,
-      nations,
-      types,
-      handleLevelChange,
-      handleNationChange,
-      handleTypeChange,
-      handleSearch,
-    }
-  },
+const levels = computed(() => {
+  return [...new Set(props.vehicles.map((vehicle) => vehicle.level))].sort((a, b) => a - b)
 })
+
+const nations = computed(() => {
+  return [...new Set(props.vehicles.map((vehicle) => vehicle.nation.title))]
+})
+
+const types = computed(() => {
+  return [...new Set(props.vehicles.map((vehicle) => vehicle.type.title))]
+})
+
+const handleLevelChange = (e: Event) => {
+  const target = e.target as HTMLSelectElement
+  const value = target.value === 'all' ? null : parseInt(target.value)
+  emit('update:modelValue', { ...props.modelValue, level: value })
+}
+
+const handleNationChange = (e: Event) => {
+  const target = e.target as HTMLSelectElement
+  const value = target.value === 'all' ? null : target.value
+  emit('update:modelValue', { ...props.modelValue, nation: value })
+}
+
+const handleTypeChange = (e: Event) => {
+  const target = e.target as HTMLSelectElement
+  const value = target.value === 'all' ? null : target.value
+  emit('update:modelValue', { ...props.modelValue, type: value })
+}
+
+const handleSearch = debounce((e: Event) => {
+  const target = e.target as HTMLInputElement
+  const value = target.value
+  emit('update:modelValue', { ...props.modelValue, search: value })
+}, 300)
 </script>

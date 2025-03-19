@@ -89,64 +89,50 @@
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent, computed, watch, onBeforeUnmount } from 'vue'
-import type { PropType } from 'vue'
+<script setup lang="ts">
+import { computed, watch, onBeforeUnmount } from 'vue'
 import type { Vehicle } from '@/types/types'
 
-export default defineComponent({
-  name: 'ShipModal',
-  props: {
-    vehicle: {
-      type: Object as PropType<Vehicle>,
-      required: true,
-    },
-    isOpen: {
-      type: Boolean,
-      required: true,
-    },
-  },
-  emits: ['close'],
-  setup(props, { emit }) {
-    const shipImage = computed(() => {
-      return props.vehicle.icons.large || props.vehicle.icons.medium
-    })
+const props = defineProps<{
+  vehicle: Vehicle
+  isOpen: boolean
+}>()
 
-    const handleEscape = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') {
-        close()
-      }
-    }
+const emit = defineEmits<{
+  (e: 'close'): void
+}>()
 
-    const close = () => {
+const shipImage = computed(() => {
+  return props.vehicle.icons.large || props.vehicle.icons.medium
+})
+
+const close = () => {
+  document.body.style.overflow = ''
+  emit('close')
+}
+
+const handleEscape = (e: KeyboardEvent) => {
+  if (e.key === 'Escape') {
+    close()
+  }
+}
+
+watch(
+  () => props.isOpen,
+  (newValue) => {
+    if (newValue) {
+      document.body.style.overflow = 'hidden'
+      document.addEventListener('keydown', handleEscape)
+    } else {
       document.body.style.overflow = ''
-      emit('close')
-    }
-
-    watch(
-      () => props.isOpen,
-      (newValue) => {
-        if (newValue) {
-          document.body.style.overflow = 'hidden'
-          document.addEventListener('keydown', handleEscape)
-        } else {
-          document.body.style.overflow = ''
-          document.removeEventListener('keydown', handleEscape)
-        }
-      },
-      { immediate: true },
-    )
-
-    onBeforeUnmount(() => {
       document.removeEventListener('keydown', handleEscape)
-
-      document.body.style.overflow = ''
-    })
-
-    return {
-      shipImage,
-      close,
     }
   },
+  { immediate: true },
+)
+
+onBeforeUnmount(() => {
+  document.removeEventListener('keydown', handleEscape)
+  document.body.style.overflow = ''
 })
 </script>

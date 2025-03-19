@@ -30,105 +30,76 @@
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent, type PropType, computed, ref, watch, onBeforeUnmount } from 'vue'
+<script setup lang="ts">
+import { ref, computed, watch, onBeforeUnmount } from 'vue'
 import type { Vehicle, FilterState } from '@/types/types'
+
 import ShipCard from './ShipCard.vue'
 import ShipModal from './ShipModal.vue'
 import Pagination from './Pagination.vue'
 
-export default defineComponent({
-  name: 'ShipGallery',
-  components: {
-    ShipCard,
-    ShipModal,
-    Pagination,
-  },
-  props: {
-    vehicles: {
-      type: Array as PropType<Vehicle[]>,
-      required: true,
-    },
-    filter: {
-      type: Object as PropType<FilterState>,
-      required: true,
-    },
-    itemsPerPage: {
-      type: Number,
-      default: 12,
-    },
-  },
-  setup(props) {
-    const currentPage = ref(1)
-    const selectedShip = ref<Vehicle | null>(null)
-    const isModalOpen = ref(false)
+const props = defineProps<{
+  vehicles: Vehicle[]
+  filter: FilterState
+  itemsPerPage?: number
+}>()
 
-    const filteredVehicles = computed(() => {
-      return props.vehicles.filter((vehicle) => {
-        const levelMatch = props.filter.level === null || vehicle.level === props.filter.level
-        const nationMatch =
-          props.filter.nation === null || vehicle.nation.title === props.filter.nation
-        const typeMatch = props.filter.type === null || vehicle.type.title === props.filter.type
-        const searchMatch = vehicle.title.toLowerCase().includes(props.filter.search.toLowerCase())
+const itemsPerPage = props.itemsPerPage ?? 12
 
-        return levelMatch && nationMatch && typeMatch && searchMatch
-      })
-    })
+const currentPage = ref(1)
+const selectedShip = ref<Vehicle | null>(null)
+const isModalOpen = ref(false)
 
-    const totalPages = computed(() => {
-      return Math.ceil(filteredVehicles.value.length / props.itemsPerPage)
-    })
+const filteredVehicles = computed(() => {
+  return props.vehicles.filter((vehicle) => {
+    const levelMatch = props.filter.level === null || vehicle.level === props.filter.level
+    const nationMatch = props.filter.nation === null || vehicle.nation.title === props.filter.nation
+    const typeMatch = props.filter.type === null || vehicle.type.title === props.filter.type
+    const searchMatch = vehicle.title.toLowerCase().includes(props.filter.search.toLowerCase())
 
-    const paginatedVehicles = computed(() => {
-      const startIndex = (currentPage.value - 1) * props.itemsPerPage
-      const endIndex = startIndex + props.itemsPerPage
-      return filteredVehicles.value.slice(startIndex, endIndex)
-    })
-
-    const handlePageChange = (page: number) => {
-      if (page >= 1 && page <= totalPages.value) {
-        currentPage.value = page
-      }
-    }
-
-    const openModal = (vehicle: Vehicle) => {
-      selectedShip.value = vehicle
-      isModalOpen.value = true
-    }
-
-    const closeModal = () => {
-      isModalOpen.value = false
-
-      document.body.style.overflow = ''
-
-      setTimeout(() => {
-        selectedShip.value = null
-      }, 300)
-    }
-
-    onBeforeUnmount(() => {
-      document.body.style.overflow = ''
-    })
-
-    watch(
-      () => props.filter,
-      () => {
-        currentPage.value = 1
-      },
-      { deep: true },
-    )
-
-    return {
-      filteredVehicles,
-      paginatedVehicles,
-      currentPage,
-      totalPages,
-      handlePageChange,
-      selectedShip,
-      isModalOpen,
-      openModal,
-      closeModal,
-    }
-  },
+    return levelMatch && nationMatch && typeMatch && searchMatch
+  })
 })
+
+const totalPages = computed(() => {
+  return Math.ceil(filteredVehicles.value.length / itemsPerPage)
+})
+
+const paginatedVehicles = computed(() => {
+  const startIndex = (currentPage.value - 1) * itemsPerPage
+  const endIndex = startIndex + itemsPerPage
+  return filteredVehicles.value.slice(startIndex, endIndex)
+})
+
+const handlePageChange = (page: number) => {
+  if (page >= 1 && page <= totalPages.value) {
+    currentPage.value = page
+  }
+}
+
+const openModal = (vehicle: Vehicle) => {
+  selectedShip.value = vehicle
+  isModalOpen.value = true
+}
+
+const closeModal = () => {
+  isModalOpen.value = false
+  document.body.style.overflow = ''
+
+  setTimeout(() => {
+    selectedShip.value = null
+  }, 300)
+}
+
+onBeforeUnmount(() => {
+  document.body.style.overflow = ''
+})
+
+watch(
+  () => props.filter,
+  () => {
+    currentPage.value = 1
+  },
+  { deep: true },
+)
 </script>

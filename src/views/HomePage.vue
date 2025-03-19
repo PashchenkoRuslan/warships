@@ -43,55 +43,39 @@
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent, ref, onMounted } from 'vue'
+<script setup lang="ts">
+import { ref, onMounted } from 'vue'
 import type { Vehicle, FilterState } from '@/types/types'
 import { fetchVehicles } from '@/services/api'
 import FilterPanel from '@/components/FilterPanel.vue'
 import ShipGallery from '@/components/ShipGallery.vue'
 
-export default defineComponent({
-  name: 'HomePage',
-  components: {
-    FilterPanel,
-    ShipGallery,
-  },
-  setup() {
-    const vehicles = ref<Vehicle[]>([])
-    const loading = ref<boolean>(true)
-    const error = ref<string | null>(null)
-    const filter = ref<FilterState>({
-      level: null,
-      nation: null,
-      type: null,
-      search: '',
-    })
+const vehicles = ref<Vehicle[]>([])
+const loading = ref(true)
+const error = ref<string | null>(null)
 
-    const loadVehicles = async () => {
-      try {
-        loading.value = true
-        error.value = null
-        const data = await fetchVehicles()
-        vehicles.value = data.vehicles
-      } catch (err) {
-        error.value = 'Не удалось загрузить данные о кораблях. Пожалуйста, повторите попытку позже.'
-        console.error(err)
-      } finally {
-        loading.value = false
-      }
-    }
+const filter = ref<FilterState>({
+  level: null,
+  nation: null,
+  type: null,
+  search: '',
+})
 
-    onMounted(() => {
-      loadVehicles()
-    })
+const loadVehicles = async () => {
+  try {
+    loading.value = true
+    error.value = null
+    const data = await fetchVehicles()
+    vehicles.value = data.vehicles
+  } catch (err) {
+    error.value = 'Не удалось загрузить данные о кораблях. Пожалуйста, повторите попытку позже.'
+    console.error(err)
+  } finally {
+    loading.value = false
+  }
+}
 
-    return {
-      vehicles,
-      loading,
-      error,
-      filter,
-      loadVehicles,
-    }
-  },
+onMounted(() => {
+  loadVehicles()
 })
 </script>

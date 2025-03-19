@@ -51,37 +51,24 @@
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent, type PropType, ref, computed } from 'vue'
+<script setup lang="ts">
+import { ref, computed } from 'vue'
 import type { Vehicle } from '@/types/types'
 
-export default defineComponent({
-  name: 'ShipCard',
-  props: {
-    vehicle: {
-      type: Object as PropType<Vehicle>,
-      required: true,
-    },
-  },
-  emits: ['select-ship'],
-  setup(props) {
-    const imageError = ref(false)
+const props = defineProps<{
+  vehicle: Vehicle
+}>()
 
-    const shipImage = computed(() => {
-      if (imageError.value) {
-        return '/placeholder-ship.png'
-      }
-      return props.vehicle.icons.medium
-    })
+const imageError = ref(false)
 
-    const handleImageError = () => {
-      imageError.value = true
-    }
-
-    return {
-      shipImage,
-      handleImageError,
-    }
-  },
+const shipImage = computed(() => {
+  if (imageError.value) {
+    return '/placeholder-ship.png'
+  }
+  return props.vehicle.icons.medium
 })
+
+const handleImageError = () => {
+  imageError.value = true
+}
 </script>
