@@ -16,7 +16,7 @@
         class="px-3 py-1 rounded border"
         :class="
           currentPage === page
-            ? 'bg-blue-500 text-white border-blue-500'
+            ? 'bg-blue-950 text-white border-blue-950'
             : 'border-gray-300 hover:bg-gray-100'
         "
       >

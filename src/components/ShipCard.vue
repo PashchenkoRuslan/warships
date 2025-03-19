@@ -12,7 +12,7 @@
         @error="handleImageError"
       />
       <div
-        class="absolute top-2 right-2 bg-blue-100 text-blue-800 text-xs font-semibold px-2.5 py-0.5 rounded"
+        class="absolute top-2 right-2 bg-blue-100 text-blue-950 text-xs font-semibold px-2.5 py-0.5 rounded"
       >
         Ур. {{ vehicle.level }}
       </div>

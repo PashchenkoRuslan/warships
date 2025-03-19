@@ -1,10 +1,10 @@
 <template>
-  <div v-if="isOpen" class="fixed inset-0 z-50 overflow-y-auto bg-black bg-opacity-75">
+  <div v-if="isOpen" class="fixed inset-0 z-50 overflow-y-auto bg-blue-950 bg-opacity-75">
     <div class="min-h-screen flex items-center justify-center p-4">
       <div class="bg-white rounded-lg shadow-xl w-full max-w-4xl">
         <div class="bg-black text-white p-4 rounded-t-lg flex justify-between items-center">
           <h2 class="text-2xl font-bold">{{ vehicle.title }}</h2>
-          <button @click="close" class="text-white hover:text-gray-300">
+          <button @click="close" class="text-white hover:text-gray-300 cursor-pointer">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               class="h-6 w-6"
@@ -54,7 +54,7 @@
                   loading="lazy"
                 />
                 <span class="text-lg mr-4 text-white">{{ vehicle.type.title }}</span>
-                <span class="bg-blue-600 text-white text-sm font-semibold px-3 py-1 rounded">
+                <span class="bg-blue-950 text-white text-sm font-semibold px-3 py-1 rounded">
                   Уровень {{ vehicle.level }}
                 </span>
               </div>

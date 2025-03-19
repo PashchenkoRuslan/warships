@@ -1,13 +1,13 @@
 <template>
-  <div class="min-h-screen bg-gray-50">
-    <header class="bg-black text-white py-6">
+  <div class="flex flex-col min-h-screen bg-gray-50">
+    <header class="bg-blue-950 text-white py-6">
       <div class="container mx-auto px-4">
         <h1 class="text-3xl font-bold">Мир Кораблей: Галерея</h1>
         <p class="mt-2">Полная коллекция боевых кораблей</p>
       </div>
     </header>
 
-    <main class="container mx-auto px-4 py-8">
+    <main class="container mx-auto px-4 py-8 flex-grow">
       <template v-if="loading">
         <div class="text-center py-12">
           <div
