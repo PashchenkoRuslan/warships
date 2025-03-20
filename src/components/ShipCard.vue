@@ -65,6 +65,10 @@ const props = defineProps<{
   vehicle: Vehicle
 }>()
 
+defineEmits<{
+  (e: 'select-ship', vehicle: Vehicle): void
+}>()
+
 const imageError = ref(false)
 
 const shipImage = computed(() => {

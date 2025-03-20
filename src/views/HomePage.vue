@@ -8,7 +8,7 @@
     </header>
 
     <main class="container mx-auto px-4 py-8 flex-grow">
-      <template v-if="loading">
+      <template v-if="vehiclesStore.loading">
         <div class="text-center py-12">
           <div
             class="inline-block animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-900"
@@ -17,11 +17,11 @@
         </div>
       </template>
 
-      <template v-else-if="error">
+      <template v-else-if="vehiclesStore.error">
         <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
-          <p>{{ error }}</p>
+          <p>{{ vehiclesStore.error }}</p>
           <button
-            @click="loadVehicles"
+            @click="vehiclesStore.loadVehicles"
             class="mt-2 bg-red-700 text-white px-4 py-2 rounded hover:bg-red-800"
           >
             Попробовать снова
@@ -30,8 +30,8 @@
       </template>
 
       <template v-else>
-        <FilterPanel :vehicles="vehicles" v-model="filter" />
-        <ShipGallery :vehicles="vehicles" :filter="filter" />
+        <FilterPanel />
+        <ShipGallery />
       </template>
     </main>
 
@@ -44,38 +44,14 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
-import type { Vehicle, FilterState } from '@/types/types'
-import { fetchVehicles } from '@/services/api'
+import { onMounted } from 'vue'
+import { useVehiclesStore } from '@/stores/vehicles'
 import FilterPanel from '@/components/FilterPanel.vue'
 import ShipGallery from '@/components/ShipGallery.vue'
 
-const vehicles = ref<Vehicle[]>([])
-const loading = ref(true)
-const error = ref<string | null>(null)
-
-const filter = ref<FilterState>({
-  level: null,
-  nation: null,
-  type: null,
-  search: '',
-})
-
-const loadVehicles = async () => {
-  try {
-    loading.value = true
-    error.value = null
-    const data = await fetchVehicles()
-    vehicles.value = data.vehicles
-  } catch (err) {
-    error.value = 'Не удалось загрузить данные о кораблях. Пожалуйста, повторите попытку позже.'
-    console.error(err)
-  } finally {
-    loading.value = false
-  }
-}
+const vehiclesStore = useVehiclesStore()
 
 onMounted(() => {
-  loadVehicles()
+  vehiclesStore.loadVehicles()
 })
 </script>

@@ -8,11 +8,13 @@
           <select
             id="level-filter"
             class="border rounded p-2"
-            :value="modelValue.level === null ? 'all' : modelValue.level"
+            :value="vehiclesStore.filter.level === null ? 'all' : vehiclesStore.filter.level"
             @change="handleLevelChange"
           >
             <option value="all">Все уровни</option>
-            <option v-for="level in levels" :key="level" :value="level">{{ level }}</option>
+            <option v-for="level in vehiclesStore.levels" :key="level" :value="level">
+              {{ level }}
+            </option>
           </select>
         </div>
 
@@ -21,11 +23,13 @@
           <select
             id="nation-filter"
             class="border rounded p-2"
-            :value="modelValue.nation === null ? 'all' : modelValue.nation"
+            :value="vehiclesStore.filter.nation === null ? 'all' : vehiclesStore.filter.nation"
             @change="handleNationChange"
           >
             <option value="all">Все нации</option>
-            <option v-for="nation in nations" :key="nation" :value="nation">{{ nation }}</option>
+            <option v-for="nation in vehiclesStore.nations" :key="nation" :value="nation">
+              {{ nation }}
+            </option>
           </select>
         </div>
 
@@ -34,11 +38,13 @@
           <select
             id="type-filter"
             class="border rounded p-2"
-            :value="modelValue.type === null ? 'all' : modelValue.type"
+            :value="vehiclesStore.filter.type === null ? 'all' : vehiclesStore.filter.type"
             @change="handleTypeChange"
           >
             <option value="all">Все классы</option>
-            <option v-for="type in types" :key="type" :value="type">{{ type }}</option>
+            <option v-for="type in vehiclesStore.types" :key="type" :value="type">
+              {{ type }}
+            </option>
           </select>
         </div>
       </div>
@@ -49,7 +55,7 @@
           class="border rounded p-2"
           placeholder="Поиск..."
           type="text"
-          :value="modelValue.search"
+          :value="vehiclesStore.filter.search"
           @input="handleSearch"
         />
       </div>
@@ -58,52 +64,32 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
 import debounce from 'lodash.debounce'
-import type { Vehicle, FilterState } from '@/types/types'
+import { useVehiclesStore } from '@/stores/vehicles'
 
-const props = defineProps<{
-  vehicles: Vehicle[]
-  modelValue: FilterState
-}>()
-
-const emit = defineEmits<{
-  (e: 'update:modelValue', value: FilterState): void
-}>()
-
-const levels = computed(() => {
-  return [...new Set(props.vehicles.map((vehicle) => vehicle.level))].sort((a, b) => a - b)
-})
-
-const nations = computed(() => {
-  return [...new Set(props.vehicles.map((vehicle) => vehicle.nation.title))]
-})
-
-const types = computed(() => {
-  return [...new Set(props.vehicles.map((vehicle) => vehicle.type.title))]
-})
+const vehiclesStore = useVehiclesStore()
 
 const handleLevelChange = (e: Event) => {
   const target = e.target as HTMLSelectElement
   const value = target.value === 'all' ? null : parseInt(target.value)
-  emit('update:modelValue', { ...props.modelValue, level: value })
+  vehiclesStore.updateFilter({ level: value })
 }
 
 const handleNationChange = (e: Event) => {
   const target = e.target as HTMLSelectElement
   const value = target.value === 'all' ? null : target.value
-  emit('update:modelValue', { ...props.modelValue, nation: value })
+  vehiclesStore.updateFilter({ nation: value })
 }
 
 const handleTypeChange = (e: Event) => {
   const target = e.target as HTMLSelectElement
   const value = target.value === 'all' ? null : target.value
-  emit('update:modelValue', { ...props.modelValue, type: value })
+  vehiclesStore.updateFilter({ type: value })
 }
 
 const handleSearch = debounce((e: Event) => {
   const target = e.target as HTMLInputElement
   const value = target.value
-  emit('update:modelValue', { ...props.modelValue, search: value })
+  vehiclesStore.updateFilter({ search: value })
 }, 300)
 </script>
